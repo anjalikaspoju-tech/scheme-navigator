@@ -11,13 +11,13 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
   ];
 
   return (
-    <div className="bg-white border-b px-6 py-4">
+    <div className="bg-white border-b px-4 py-2">
       <div className="flex justify-between items-center max-w-2xl mx-auto">
         {steps.map((step, index) => (
           <div key={step.num} className="flex flex-col items-center flex-1">
             {/* Step Circle */}
             <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all mb-2 ${
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base transition-all mb-1 ${
                 currentStep >= step.num
                   ? "bg-green-600 text-white shadow-md scale-110"
                   : "bg-gray-200 text-gray-600"

@@ -260,8 +260,8 @@ export default function ChatPage() {
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
     setMessages([
-      { text: translations[newLanguage].welcome, sender: "bot" },
-      { text: translations[newLanguage].askState, sender: "bot" },
+      { text: translations[newLanguage as keyof typeof translations].welcome, sender: "bot" },
+      { text: translations[newLanguage as keyof typeof translations].askState, sender: "bot" },
     ]);
     setStep(1);
     setSelectedState(null);
@@ -280,7 +280,7 @@ export default function ChatPage() {
     };
 
     const botMsg: Message = {
-      text: `${translations[language as string].stateSelected} ${state}. ${translations[language as string].askLand}`,
+      text: `${translations[language as keyof typeof translations].stateSelected} ${state}. ${translations[language as keyof typeof translations].askLand}`,
       sender: "bot",
     };
 
@@ -294,28 +294,15 @@ export default function ChatPage() {
 
     const userMsg: Message = { text: input, sender: "user" };
 
-    // Step 2: user provided land size -> ask crop
+    // Step 2: user provided land size -> show schemes
     if (step === 2 && selectedState) {
       setFarmerData((d) => ({ ...d, land: input }));
       const botMsg: Message = {
-        text: translations[language as string].askCrop,
+        text: translations[language as keyof typeof translations].schemesMsg,
         sender: "bot",
       };
       setMessages([...messages, userMsg, botMsg]);
       setStep(3);
-      setInput("");
-      return;
-    }
-
-    // Step 3: user provided crop -> show schemes
-    if (step === 3 && selectedState) {
-      setFarmerData((d) => ({ ...d, crop: input }));
-      const botMsg: Message = {
-        text: translations[language as string].schemesMsg,
-        sender: "bot",
-      };
-      setMessages([...messages, userMsg, botMsg]);
-      setStep(4);
       setInput("");
       return;
     }
@@ -328,52 +315,54 @@ export default function ChatPage() {
       <Header />
       <LanguageSelector language={language || "English"} onChange={handleLanguageChange} />
 
-      {step > 0 && <StepIndicator currentStep={step} totalSteps={4} />}
+      {step > 0 && <StepIndicator currentStep={step} totalSteps={3} />}
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        <MessageList messages={messages} showSchemes={false} />
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 flex flex-col items-center">
+        <div className="w-full max-w-2xl">
+          <MessageList messages={messages} showSchemes={false} />
 
-        {/* State Selector - shown at step 1 */}
-        {step === 1 && (
-          <StateSelector onSelectState={handleStateSelect} />
-        )}
+          {/* State Selector - shown at step 1 */}
+          {step === 1 && (
+            <StateSelector onSelectState={handleStateSelect} />
+          )}
 
-        {/* Schemes Display - shown at step 4 */}
-        {step === 4 && selectedState && (
-          <div className="my-4 p-4 bg-white rounded-lg border-2 border-green-500">
-            <div className="mb-4">
-              <button
-                onClick={() => {
-                  setStep(1);
-                  setSelectedState(null);
-                  setShowStateSelector(true);
-                  setMessages([
-                    { text: translations[language].welcome, sender: "bot" },
-                    { text: translations[language].askState, sender: "bot" },
-                  ]);
-                }}
-                className="text-blue-600 hover:text-blue-800 underline text-sm mb-3"
-              >
-                ← {translations[language].back}
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {schemes.map((scheme, index) => (
-                <div
-                  key={index}
-                  className="p-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:shadow-lg transition"
+          {/* Schemes Display - shown at step 3 */}
+          {step === 3 && selectedState && (
+            <div className="mt-3 p-3 bg-white rounded-lg border-2 border-green-500 w-full">
+              <div className="mb-3">
+                <button
+                  onClick={() => {
+                    setStep(1);
+                    setSelectedState(null);
+                    setShowStateSelector(true);
+                    setMessages([
+                      { text: translations[language as keyof typeof translations].welcome, sender: "bot" },
+                      { text: translations[language as keyof typeof translations].askState, sender: "bot" },
+                    ]);
+                  }}
+                  className="text-blue-600 hover:text-blue-800 underline text-sm"
                 >
-                  {scheme}
-                </div>
-              ))}
+                  ← {translations[language as keyof typeof translations].back}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {schemes.map((scheme, index) => (
+                  <div
+                    key={index}
+                    className="p-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded text-sm font-semibold hover:shadow-lg transition"
+                  >
+                    {scheme}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Input Area - shown at step 2 (land) and step 3 (crop) */}
-      {(step === 2 || step === 3) && (
+      {/* Input Area - shown at step 2 (land) */}
+      {step === 2 && (
         <ChatInputWithVoice
           input={input}
           setInput={setInput}

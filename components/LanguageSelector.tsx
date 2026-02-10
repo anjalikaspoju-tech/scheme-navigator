@@ -5,13 +5,13 @@ type LanguageSelectorProps = {
 
 export default function LanguageSelector({ language, onChange }: LanguageSelectorProps) {
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-green-50 p-4 text-center border-b border-green-200">
-      <div className="flex items-center justify-center gap-3">
-        <span className="text-2xl">🌐</span>
-        <label className="font-bold text-gray-700 text-lg">Select Language:</label>
+    <div className="bg-gradient-to-r from-blue-50 to-green-50 px-3 py-2 text-center border-b border-green-200">
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-lg">🌐</span>
+        <label className="font-bold text-gray-700 text-sm">Language:</label>
         <div className="relative inline-block">
           <select
-            className="appearance-none border-2 border-green-500 bg-white px-6 py-3 rounded-lg cursor-pointer font-semibold text-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 transition hover:border-green-600"
+            className="appearance-none border-2 border-green-500 bg-white px-3 py-1.5 rounded text-sm cursor-pointer font-semibold text-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 transition hover:border-green-600"
             value={language}
             onChange={(e) => onChange(e.target.value)}
           >
